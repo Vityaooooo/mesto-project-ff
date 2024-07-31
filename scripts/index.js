@@ -6,13 +6,13 @@ const placeItems = document.querySelector('.places__list');
 
 // @todo: Функция создания карточки
 function createCard(cardData, deleteCardFunc) {
-	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+	const card = cardTemplate.querySelector('.card').cloneNode(true);
 		
-	cardElement.querySelector('.card__image').src = cardData.link;
-	cardElement.querySelector('.card__title').textContent = cardData.name;
-	cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
+	card.querySelector('.card__image').src = cardData.link;
+	card.querySelector('.card__title').textContent = cardData.name;
+	card.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
 
-	return cardElement;
+	return card;
 };
 
 // @todo: Функция удаления карточки
