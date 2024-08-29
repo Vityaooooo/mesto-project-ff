@@ -1,6 +1,6 @@
 import '../pages/index.css';
-import { createCard, addCards, deleteCard, likeCard, addImgToPopup } from './cards';
 import { openModal, closeModal, addAnimateClassPopup } from './modal';
+import { createCard, addCards, deleteCard, likeCard, addImgToPopup } from './cards';
 
 // Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -27,7 +27,7 @@ const formAddCard = document.forms['new-place'];
 const namePlaceInput = formAddCard.elements['place-name'];
 const imgPlaceInput = formAddCard.elements.link;
 
-export { cardTemplate, placeItems, popupImage, popupArr };
+export { cardTemplate, placeItems, popupImage };
 
 // Функция добавления новой карточки
 function handleSubmitAddCard(evt) {
@@ -87,6 +87,7 @@ buttonAddCard.addEventListener('click', () => {
 /* placeItems.addEventListener('click', function(evt) {
 	if (evt.target.classList.contains('card__image')) {
 		addImgToPopup(evt);
+		evt.target.onload = openModal(popupImage);
 	}
 
 	if (evt.target.classList.contains('card__like-button')) {

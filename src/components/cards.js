@@ -11,8 +11,8 @@ const initialCards = [
         link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
     },
     {
-      name: "Иваново",
-      link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
+        name: "Иваново",
+        link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
     },
     {
         name: "Камчатка",
@@ -39,7 +39,13 @@ function createCard(cardData, deleteCardFunc, likeCard, addImgToPopup) {
 	card.querySelector('.card__title').textContent = cardData.name;
 	card.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
     card.querySelector('.card__like-button').addEventListener('click', likeCard);
-    card.querySelector('.card__image').addEventListener('click', addImgToPopup);
+    
+    const img = card.querySelector('.card__image');
+    
+    img.addEventListener('click', (evt) => {
+        addImgToPopup(evt);
+        img.onload = openModal(popupImage);
+    });
 
 	return card;
 };
@@ -62,15 +68,17 @@ function likeCard(evt) {
     evt.target.classList.toggle('card__like-button_is-active');
 }; 
 
-// Функция добавления картинки в попап
+// Функция добавления картинки и текста в попап
 function addImgToPopup(evt) {
     const imgPopup = popupImage.querySelector('.popup__image');
+    const titlePopup = popupImage.querySelector('.popup__caption');
+
     const imgCard = evt.target.closest('.card__image');
+    const titleCard = evt.target.closest('.card').querySelector('.card__title');
 
 	imgPopup.src = imgCard.src;
 	imgPopup.alt = imgCard.alt;
-
-    openModal(popupImage);
-}
+    titlePopup.textContent = titleCard.textContent;
+};
 
 export { createCard, deleteCard, addCards, likeCard, addImgToPopup };
