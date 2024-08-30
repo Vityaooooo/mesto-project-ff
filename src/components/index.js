@@ -47,7 +47,7 @@ function handleSubmitAddCard(evt) {
 
 	placeItems.prepend(createCard(cardData, deleteCard, likeCard, addImgToPopup));
 
-	closeModal();	
+	closeModal(popupAddCard);	
 }
 
 // Функция редактирования профиля
@@ -60,7 +60,7 @@ function handleSubmitEditProfile(evt) {
     nameProfile.textContent = name;
 	jobProfile.textContent = job;
 
-	closeModal();
+	closeModal(popupEditProfile);
 }
 
 // Функция вывода карточек на страницу
@@ -87,13 +87,15 @@ addAnimateClassPopup(popupArr);
 
 // Навешивание события скрытия попапов на все кнопки закрытия
 popupCloseButtons.forEach( (button) => {
-	button.addEventListener('click', closeModal);
+	button.addEventListener('click', () => {
+		closeModal(button.closest('.popup'));
+	});
 });
 
 // Навешивание событий на открытие и закрытие попапа, редактирующего профиль
 buttonEditProfile.addEventListener('click', () => {
-	nameInput.value = document.querySelector('.profile__title').textContent;
-	jobInput.value = document.querySelector('.profile__description').textContent;
+	nameInput.value = nameProfile.textContent;
+	jobInput.value = jobProfile.textContent;
 
 	openModal(popupEditProfile);
 });
