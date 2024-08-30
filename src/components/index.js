@@ -1,6 +1,7 @@
 import '../pages/index.css';
-import { openModal, closeModal, addAnimateClassPopup } from './modal';
-import { createCard, addCards, deleteCard, likeCard, addImgToPopup } from './cards';
+import { openModal, closeModal, addAnimateClassPopup } from './modal.js';
+import { createCard, deleteCard, likeCard } from './cards.js';
+import { initialCards } from './initialCards.js';
 
 // Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -13,11 +14,17 @@ const popupArr = document.querySelectorAll('.popup');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image');
+// Элементы модульного окна с изображением
+const imgPopup = popupImage.querySelector('.popup__image');
+const titlePopup = popupImage.querySelector('.popup__caption');
 // Массив кнопок закрытия модалок
 const popupCloseButtons = document.querySelectorAll('.popup__close');
 // Кнопки открытия модалок
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddCard = document.querySelector('.profile__add-button');
+// Элементы профиля 
+const nameProfile = document.querySelector('.profile__title');
+const jobProfile = document.querySelector('.profile__description');
 // Форма редактирования профиля и ее элементы
 const formEditProfile = document.forms['edit-profile'];
 const nameInput = formEditProfile.elements.name;
@@ -50,14 +57,30 @@ function handleSubmitEditProfile(evt) {
 	const name = nameInput.value;
 	const job = jobInput.value;
 
-	const nameProfile = document.querySelector('.profile__title');
-	const jobProfile = document.querySelector('.profile__description');
-
     nameProfile.textContent = name;
 	jobProfile.textContent = job;
 
 	closeModal();
 }
+
+// Функция вывода карточек на страницу
+function addCards(arrCards) {
+	arrCards.forEach(card => {
+		placeItems.append(createCard(card, deleteCard, likeCard, addImgToPopup));
+	});
+};
+
+// Функция добавления картинки и текста в попап
+function addImgToPopup(evt) {
+    const imgCard = evt.target.closest('.card__image');
+    const titleCard = evt.target.closest('.card').querySelector('.card__title');
+
+	imgPopup.src = imgCard.src;
+	imgPopup.alt = imgCard.alt;
+    titlePopup.textContent = titleCard.textContent;
+
+	openModal(popupImage);
+};
 
 // Добавляем на попапы необходимый класс для плавной анимации
 addAnimateClassPopup(popupArr);
@@ -83,22 +106,10 @@ buttonAddCard.addEventListener('click', () => {
 	openModal(popupAddCard);
 });
 
-// Реализация лайка и открытия попапа через всплытие
-/* placeItems.addEventListener('click', function(evt) {
-	if (evt.target.classList.contains('card__image')) {
-		addImgToPopup(evt);
-		evt.target.onload = openModal(popupImage);
-	}
-
-	if (evt.target.classList.contains('card__like-button')) {
-		likeCard(evt);
-	} 
-}); */
-
 // Навешивание события на редактирование профиля
 formEditProfile.addEventListener('submit', handleSubmitEditProfile);
 // Навешивание события на добавление карточки
 formAddCard.addEventListener('submit', handleSubmitAddCard);
 
 // Выводим все имеющиеся карточки
-addCards();
+addCards(initialCards);
