@@ -1,6 +1,6 @@
 import '../pages/index.css';
 import { openModal, closeModal, addAnimateClassPopup } from './modal.js';
-import { createCard, deleteCard, likeCard } from './cards.js';
+import { createCard, deleteCard, likeCard, hasLikeUser } from './cards.js';
 // import { initialCards } from './initialCards.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { getUserDataReq, getInitialCardsReq, patchUserDataReq, postCardReq, deleteCardReq, putLikeToCardReq, deleteLikeFromCardReq, patchNewProfilePhoto, checkLinkReq } from './api.js';
@@ -54,15 +54,9 @@ const validationConfig = {
 };
 
 const cardFunctions = {
-	deleteCard, 
-	likeCard, 
+	handleDeleteCard,
+	handleLikeCard,
 	addImgToPopup
-};
-
-const cardReq = {
-	deleteCardReq, 
-	putLikeToCardReq, 
-	deleteLikeFromCardReq
 };
 
 export { cardTemplate };
@@ -93,6 +87,41 @@ function handleDeleteCard(evt) {
 	openModal(popupDeleteCard);
 };
 
+// Функция обновления лайков
+function handleLikeCard(cardData, userId, cardLikeCounter, cardLikeButton) {
+	if (!hasLikeUser(cardData.likes, userId)) {
+		addLikeToCard(cardData, cardLikeCounter, cardLikeButton);
+	} else {
+		deleteLikeFromCard(cardData, cardLikeCounter, cardLikeButton);
+	}
+};
+
+// Функция добавления лайка на карточку
+function addLikeToCard(cardData, cardLikeCounter, cardLikeButton) {
+	putLikeToCardReq(cardData['_id'])
+	.then( (response) => {
+		cardData.likes = response.likes;
+		cardLikeCounter.textContent = response.likes.length;
+		likeCard(cardLikeButton);
+	})
+	.catch( (err) => {
+		console.log(err);
+	})
+};
+
+// Функция удаления лайка с карточку
+function deleteLikeFromCard(cardData, cardLikeCounter, cardLikeButton) {
+	deleteLikeFromCardReq(cardData['_id'])
+	.then( (response) => {
+		cardData.likes = response.likes;
+		cardLikeCounter.textContent = response.likes.length;
+		likeCard(cardLikeButton);
+	})
+	.catch( (err) => {
+		console.log(err);
+	})
+};
+
 // Функция обновления фото пользователя 
 function handleSubmitEditPhotoProfile(evt) {
 	evt.preventDefault();
@@ -104,8 +133,8 @@ function handleSubmitEditPhotoProfile(evt) {
 
 	checkLinkReq(avatarLink)
 	.then( (response) => {
-		// Почему локал хост
-		console.log(URL.createObjectURL(response))
+		// Why is localhost
+		// URL.createObjectURL(response);
 		patchNewProfilePhoto(avatarLink)
 		.then( (response) => {
 			photoProfile.style.backgroundImage = `url('${response.avatar}')`;
@@ -137,7 +166,7 @@ function handleSubmitAddCard(evt) {
 			const cardData = JSON.parse(JSON.stringify(response));
 			const userId = response.owner['_id'];
 
-			placeItems.prepend(createCard(cardData, cardFunctions, cardReq, userId, handleDeleteCard));
+			placeItems.prepend(createCard(cardData, cardFunctions, userId));
 		})
 	})
 	.catch( (err) => {
@@ -162,7 +191,7 @@ function handleSubmitEditProfile(evt) {
 	patchUserDataReq(name, job)
 	.then( (response) => {
 		nameProfile.textContent = response.name;
-		jobProfile.textContent = response.job;
+		jobProfile.textContent = response.about;
 	})
 	.catch( (err) => {
 		console.log(err);
@@ -175,7 +204,6 @@ function handleSubmitEditProfile(evt) {
 
 // Функция удаления карточки
 function handleSubmitDeleteCard(evt) {
-	// @todo: лоудер загрузки
 	evt.preventDefault();
 
 	const cardId = popupDeleteCard.dataset.cardId;
@@ -201,7 +229,7 @@ function handleSubmitDeleteCard(evt) {
 // Функция вывода карточек на страницу
 // function addCards(arrCards) {
 // 	arrCards.forEach(card => {
-// 		placeItems.append(createCard(card, cardFunctions, cardReq, userId, handleDeleteCard));
+// 		placeItems.append(createCard(card, cardFunctions, userId));
 // 	});
 // };
 
@@ -237,8 +265,7 @@ Promise.all([getUserDataReq(), getInitialCardsReq()])
 	const userId = getUserDataResponse['_id'];
 
 	getInitialCardsResponse.forEach( (cardData) => {
-		// placeItems.prepend(createCard(cardData, cardFunctions, cardReq, userId, handleDeleteCard))
-		placeItems.append(createCard(cardData, cardFunctions, cardReq, userId, handleDeleteCard))
+		placeItems.append(createCard(cardData, cardFunctions, userId))
 	});
 })
 .catch( (err) => {
