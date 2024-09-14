@@ -1,3 +1,4 @@
+// Функция добавления валидации на каждую форму
 function enableValidation( { formSelector, inputSelector, submitButtonSelector, inactiveButtonClass, inputErrorClass, errorClass } ) {
     const formList = Array.from(document.querySelectorAll(`${formSelector}`));
     formList.forEach( (formElement) => {
@@ -5,6 +6,7 @@ function enableValidation( { formSelector, inputSelector, submitButtonSelector, 
     });
 };
 
+// Функция добавления валидации на каждый инпут
 function setEventListeners( {formElement, inputSelector, submitButtonSelector, inactiveButtonClass, inputErrorClass, errorClass } ) {
     const inputList = Array.from(formElement.querySelectorAll(`${inputSelector}`));
 
@@ -18,6 +20,7 @@ function setEventListeners( {formElement, inputSelector, submitButtonSelector, i
     });
 };
 
+// Функция проверки валидности инпута
 function isValid( {formElement, inputElement, inputErrorClass, errorClass } ) {
     isValidPatternMismatch(inputElement);
     
@@ -28,6 +31,7 @@ function isValid( {formElement, inputElement, inputErrorClass, errorClass } ) {
     }
 }
 
+// Функция проверки валидности инпута в соответствии с регуляркой
 function isValidPatternMismatch(inputElement) {
     if (inputElement.validity.patternMismatch) {
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -36,6 +40,7 @@ function isValidPatternMismatch(inputElement) {
     }
 };
 
+// Функция отображения ошибки инпута
 function showInputError( {formElement, inputElement, inputErrorClass, errorClass } ) {
     const errorElement = formElement.querySelector(`.${inputElement.id}__error`);
 
@@ -45,6 +50,7 @@ function showInputError( {formElement, inputElement, inputErrorClass, errorClass
     errorElement.classList.add(errorClass);
 };
 
+// Функция скрытия ошибки интпута
 function hideInputError( {formElement, inputElement, inputErrorClass, errorClass } ) {
     const errorElement = formElement.querySelector(`.${inputElement.id}__error`);
 
@@ -54,6 +60,7 @@ function hideInputError( {formElement, inputElement, inputErrorClass, errorClass
     errorElement.classList.remove(errorClass);
 };
 
+// Функция переключения отображения кнопки submit 
 function toggleButtonState( {formElement, inputList, submitButtonSelector, inactiveButtonClass} ) {
     const submitButton = formElement.querySelector(submitButtonSelector);
     
@@ -66,12 +73,14 @@ function toggleButtonState( {formElement, inputList, submitButtonSelector, inact
     }
 };
 
+// Функции проверки наличия невалидных инпутов в форме
 function hasValidInput(inputList) {
     return inputList.some((inputElement) => {
         return !inputElement.validity.valid;
   })
 };
 
+// Функция очистки формы от ошибок валидации
 function clearValidation(formElement, { inputSelector, submitButtonSelector, inactiveButtonClass, inputErrorClass, errorClass }) {
     const inputList = Array.from(formElement.querySelectorAll(inputSelector));
 

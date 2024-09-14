@@ -66,18 +66,41 @@
       <p class="popup__caption"></p>
     </div>
   </div>
+  <div class="popup popup_type_update_photo-profile">
+    <div class="popup__content popup__content_content_avatar">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="new-avatar">
+        <input id="avatar-input" type="url" name="link" class="popup__input popup__input_type_update_photo-profile" placeholder="Ссылка на новый аватар" required>
+        <span class="popup__error avatar-input__error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
+    </div>
+  </div>
+  <div class="popup popup_type_delete-card" data-card-id="">
+    <div class="popup__content popup__content_content_avatar">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <form class="popup__form" name="delete-card">
+        <button type="submit" class="button popup__button">Да</button>
+      </form>
+    </div>
+  </div>
 </div>
 <!-- <script type="module" src="./scripts/cards.js"></script>
 <script type="module" src="./scripts/index.js"></script> -->
 
 <template id="card-template">
-  <li class="places__item card">
+  <li class="places__item card" data-card-id="">
     <img class="card__image" src="" alt="" />
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like-container">
+        <button type="button" class="card__like-button"></button>
+        <span class="card__like-counter"></span>
+      </div>
     </div>
   </li>
 </template>
