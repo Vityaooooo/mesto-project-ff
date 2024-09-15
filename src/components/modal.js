@@ -17,22 +17,18 @@ function closeModal(popup) {
 // Функция закрытия попапа при нажатии Esc
 function closeModalEscape(evt) {
     if (evt.key === 'Escape') {
-        document.removeEventListener('keydown', closeModalEscape);
-
         const openPopup = document.querySelector('.popup_is-opened');
-        openPopup.removeEventListener('click', closeModalOverlay);
-        openPopup.classList.remove('popup_is-opened');
+
+        closeModal(openPopup);
     }
 };
 
 // Функция закрытия попапа при нажатии на overlay
 function closeModalOverlay(evt) {
     if (evt.target.classList.contains('popup')) {
-        document.removeEventListener('keydown', closeModalEscape);
-
         const openPopup = document.querySelector('.popup_is-opened');
-        openPopup.removeEventListener('click', closeModalOverlay);
-        openPopup.classList.remove('popup_is-opened');
+
+        closeModal(openPopup);
     }
 };
 

@@ -1,12 +1,8 @@
 import '../pages/index.css';
 import { openModal, closeModal, addAnimateClassPopup } from './modal.js';
 import { createCard, deleteCard, likeCard, hasLikeUser } from './cards.js';
-// import { initialCards } from './initialCards.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { getUserDataReq, getInitialCardsReq, patchUserDataReq, postCardReq, deleteCardReq, putLikeToCardReq, deleteLikeFromCardReq, patchNewProfilePhoto, checkLinkReq } from './api.js';
-
-// Темплейт карточки
-const cardTemplate = document.querySelector('#card-template').content;
 
 // DOM узлы
 // Контейнер размещения карточек
@@ -59,24 +55,14 @@ const cardFunctions = {
 	addImgToPopup
 };
 
-export { cardTemplate };
-
 // Функция уведомления пользователя о загрузке 
 function renderLoadingButtonSave(button, isLoading) {	
-	if (isLoading) {
-		button.textContent = 'Сохранение ...';
-	} else {
-		button.textContent = 'Сохранить';
-	}
+	button.textContent = isLoading ? 'Сохранение ...' : 'Сохранить'
 };
 
 // Функция уведомления пользователя о загрузке 
 function renderLoadingButtonDelete(button, isLoading) {	
-	if (isLoading) {
-		button.textContent = 'Удаление ...';
-	} else {
-		button.textContent = 'Да';
-	}
+	button.textContent = isLoading ? 'Удаление ...' : 'Да'
 };
 
 // Функция открытия модального окна для удаления карточки
@@ -163,10 +149,9 @@ function handleSubmitAddCard(evt) {
 	.then( (response) => {
 		postCardReq(namePlace, imgPlace)
 		.then( (response) => {
-			const cardData = JSON.parse(JSON.stringify(response));
 			const userId = response.owner['_id'];
 
-			placeItems.prepend(createCard(cardData, cardFunctions, userId));
+			placeItems.prepend(createCard(response, cardFunctions, userId));
 		})
 	})
 	.catch( (err) => {
@@ -226,13 +211,6 @@ function handleSubmitDeleteCard(evt) {
 	});
 };
 
-// Функция вывода карточек на страницу
-// function addCards(arrCards) {
-// 	arrCards.forEach(card => {
-// 		placeItems.append(createCard(card, cardFunctions, userId));
-// 	});
-// };
-
 // Функция добавления картинки и текста в попап
 function addImgToPopup(evt) {
     const imgCard = evt.target.closest('.card__image');
@@ -245,24 +223,15 @@ function addImgToPopup(evt) {
 	openModal(popupImage);
 };
 
-// Функция вывода на страницу информацию о пользователе
-function insertUserData() {
-	getUserDataReq()
-	.then( (userData) => {
-		nameProfile.textContent = userData.name;
-		jobProfile.textContent = userData.about;
-		photoProfile.style.backgroundImage = `url('${userData.avatar}')`;
-	})
-	.catch( (err) => {
-		console.log(err);
-	})
-};
-
 // Функция добавления карточек на страницу
-function insertCards() {
+function insertData() {
 Promise.all([getUserDataReq(), getInitialCardsReq()])
 .then( ([getUserDataResponse, getInitialCardsResponse]) => {
 	const userId = getUserDataResponse['_id'];
+
+	nameProfile.textContent = getUserDataResponse.name;
+	jobProfile.textContent = getUserDataResponse.about;
+	photoProfile.style.backgroundImage = `url('${getUserDataResponse.avatar}')`;
 
 	getInitialCardsResponse.forEach( (cardData) => {
 		placeItems.append(createCard(cardData, cardFunctions, userId))
@@ -273,11 +242,8 @@ Promise.all([getUserDataReq(), getInitialCardsReq()])
 })
 };
 
-// Выводим на страницу информацию о пользователе
-insertUserData();
-
-// Выводим карточки на страницу
-insertCards();
+// Выводим карточки и информацию о пользователе на страницу
+insertData();
 
 // Добавляем на попапы необходимый класс для плавной анимации
 addAnimateClassPopup(popupArr);
@@ -308,8 +274,7 @@ buttonEditProfile.addEventListener('click', () => {
 
 // Навешивание событий на открытие и закрытие попапа, добавляющий карточки
 buttonAddCard.addEventListener('click', () => {
-	namePlaceInput.value = '';
-	imgPlaceInput.value = '';
+	formAddCard.reset();
 
 	clearValidation(popupAddCard, validationConfig);
 	
@@ -324,9 +289,6 @@ formEditProfile.addEventListener('submit', handleSubmitEditProfile);
 formAddCard.addEventListener('submit', handleSubmitAddCard);
 // Навешиванем событие на удаление карточки
 formDeleteCard.addEventListener('submit', handleSubmitDeleteCard);
-
-// Выводим все имеющиеся карточки
-// addCards(initialCards);
 
 // включение валидации вызовом enableValidation
 enableValidation(validationConfig);
